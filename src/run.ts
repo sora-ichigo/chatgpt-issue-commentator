@@ -11,12 +11,15 @@ export const run = async () => {
   const context = github.context;
   const payload = context.payload;
 
+  // only support github issue.
   const issueNumber = payload.issue?.number;
   if (!issueNumber) throw new Error("failed to get issue number.");
 
+  // get current comment body. and check whether includes TRIGGER_WORD.
   const commentBody = payload.comment?.body as string;
   if (!hasTriggerWord(commentBody)) return;
 
+  // get chatgpt response.
   const configuration = new openai.Configuration({
     apiKey: openaiApiKey,
   });
@@ -26,6 +29,7 @@ export const run = async () => {
   );
   if (!chatGPTResponse) throw new Error("failed to get chatgpt response.");
 
+  // comment issue.
   await createGitHubIssueComment(githubToken, issueNumber, chatGPTResponse);
 };
 

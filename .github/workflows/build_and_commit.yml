@@ -1,0 +1,36 @@
+name: Build and Push on Change
+
+on:
+  push:
+
+permissions:
+  contents: write
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build project
+        run: yarn build
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "github-actions-bot@example.com"
+          git add ./dist
+          git commit -m "Automated build: Update ./dist contents"
+          git push
+        continue-on-error: true
+
