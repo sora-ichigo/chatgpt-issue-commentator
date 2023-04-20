@@ -5,7 +5,7 @@ on:
         types: [created]
 
 permissions:
-  issues: read|write
+  issues: write
 
 jobs:
     run_chatgpt_issue_commentator:
