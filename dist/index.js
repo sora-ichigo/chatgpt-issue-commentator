@@ -20778,14 +20778,14 @@ function wrappy (fn, cb) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getChatGPTResponse = void 0;
 const openai_1 = __nccwpck_require__(9211);
-const getChatGPTResponse = async (configuration) => {
+const getChatGPTResponse = async (configuration, message) => {
     const client = new openai_1.OpenAIApi(configuration);
     const response = await client.createChatCompletion({
         model: "gpt-3.5-turbo",
         messages: [
             {
                 role: "user",
-                content: "なんか面白いこと言って",
+                content: message,
             },
         ],
     });
@@ -20872,36 +20872,77 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(2186));
+const run_1 = __nccwpck_require__(7764);
+try {
+    (0, run_1.run)();
+}
+catch (e) {
+    core.setFailed(e instanceof Error ? e.message : JSON.stringify(e));
+}
+
+
+/***/ }),
+
+/***/ 7764:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const openai = __importStar(__nccwpck_require__(9211));
 const chatgpt_1 = __nccwpck_require__(8322);
 const github_1 = __nccwpck_require__(978);
-// const MENTION = "@chatgpt-issue-commentator";
 const run = async () => {
     const githubToken = core.getInput("github-token");
     const openaiApiKey = core.getInput("openai-api-key");
     const context = github.context;
-    const issueNumber = context.payload.issue?.number;
-    if (!issueNumber) {
+    const payload = context.payload;
+    const issueNumber = payload.issue?.number;
+    if (!issueNumber)
         throw new Error("failed to get issue number.");
-    }
-    const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(new openai.Configuration({
+    const commentBody = payload.comment?.body;
+    if (!hasTriggerWord(commentBody))
+        return;
+    const configuration = new openai.Configuration({
         apiKey: openaiApiKey,
-    }));
-    if (!chatGPTResponse) {
+    });
+    const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, commentBody.replace(TRIGGER_WORD, ""));
+    if (!chatGPTResponse)
         throw new Error("failed to get chatgpt response.");
-    }
     await (0, github_1.createGitHubIssueComment)(githubToken, issueNumber, chatGPTResponse);
 };
 exports.run = run;
-try {
-    (0, exports.run)();
-}
-catch (e) {
-    core.setFailed(e instanceof Error ? e.message : JSON.stringify(e));
-}
+const TRIGGER_WORD = "/chatgpt";
+const hasTriggerWord = (body) => {
+    return body !== "" && body.includes(TRIGGER_WORD);
+};
 
 
 /***/ }),
