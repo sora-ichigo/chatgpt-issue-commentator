@@ -1,6 +1,9 @@
 import { OpenAIApi, Configuration } from "openai";
 
-export const getChatGPTResponse = async (configuration: Configuration) => {
+export const getChatGPTResponse = async (
+  configuration: Configuration,
+  message: string
+) => {
   const client = new OpenAIApi(configuration);
 
   const response = await client.createChatCompletion({
@@ -8,7 +11,7 @@ export const getChatGPTResponse = async (configuration: Configuration) => {
     messages: [
       {
         role: "user",
-        content: "なんか面白いこと言って",
+        content: message,
       },
     ],
   });
