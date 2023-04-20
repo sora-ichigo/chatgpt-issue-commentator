@@ -2,5 +2,9 @@
   "name": "chatgpt-issue-commentator",
   "author": "igsr5 <igsr5.dev@gmail.com>",
   "license": "MIT",
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.0",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1"
+  }
 }
