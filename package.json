@@ -17,6 +17,6 @@
     "typescript": "^5.0.4"
   },
   "scripts": {
-    "build": "babel src/index.ts --out-dir dist --extensions '.ts'"
+    "build": "babel src --out-dir dist --extensions '.ts'"
   }
 }
