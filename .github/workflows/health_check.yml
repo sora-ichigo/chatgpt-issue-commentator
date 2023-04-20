@@ -12,4 +12,4 @@ jobs:
     - name: Run ChatGPT Issue Commentator
       uses: igsr5/chatgpt-issue-commentator@v0.1.1
       with:
-        oepnai-api-key: ${{ secrets.OEPNAI_API_KEY }}
+        openai-api-key: ${{ secrets.OEPNAI_API_KEY }}
