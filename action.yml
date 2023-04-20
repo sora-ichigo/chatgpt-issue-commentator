@@ -1,7 +1,10 @@
 name: 'ChatGPT Issue Commentator'
 description: 'Automated ChatGPT responses for GitHub issues with simple @mentions'
 inputs:
-  github_token:
+  openai-api-key:
+    description: 'OpenAI Api Key'
+    required: true
+  github-token:
     description: 'GitHub Access Token'
     default: ${{ github.token }}
     required: false
