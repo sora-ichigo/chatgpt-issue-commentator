@@ -10,4 +10,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Run ChatGPT Issue Commentator
-      uses: your-username/chatgpt-issue-commentator@v0.1.0
+      uses: igsr5/chatgpt-issue-commentator@v0.1.0
