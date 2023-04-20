@@ -12,3 +12,4 @@ jobs:
           uses: igsr5/chatgpt-issue-commentator@master
           with:
               openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+              github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
