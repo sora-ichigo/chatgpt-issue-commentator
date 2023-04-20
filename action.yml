@@ -1,0 +1,10 @@
+name: 'ChatGPT Issue Commentator'
+description: 'Automated ChatGPT responses for GitHub issues with simple @mentions'
+inputs:
+  github_token:
+    description: 'GitHub Access Token'
+    default: ${{ github.token }}
+    required: false
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
