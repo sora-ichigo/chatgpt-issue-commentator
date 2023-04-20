@@ -1,0 +1,13 @@
+name: Test ChatGPT Issue Responder
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
+
+jobs:
+  run_chatgpt_responder:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run ChatGPT Issue Responder
+      uses: your-username/chatgpt-issue-responder@main
