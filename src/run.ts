@@ -19,6 +19,8 @@ export const run = async () => {
   const commentBody = payload.comment?.body as string;
   if (!hasTriggerWord(commentBody)) return;
 
+  // TODO: get previous chat messages.
+
   // get chatgpt response.
   const configuration = new openai.Configuration({
     apiKey: openaiApiKey,
