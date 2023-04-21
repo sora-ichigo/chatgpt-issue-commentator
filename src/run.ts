@@ -1,41 +1,58 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 import * as openai from "openai";
+import { ChatCompletionRequestMessage } from "openai";
 
 import { getChatGPTResponse } from "./chatgpt";
 import { createGitHubIssueComment } from "./github";
 
 export const run = async () => {
   const githubToken = core.getInput("github-token");
+  const octokit = github.getOctokit(githubToken);
   const openaiApiKey = core.getInput("openai-api-key");
   const context = github.context;
   const payload = context.payload;
 
-  // only support github issue.
+  // Only support github issue.
   const issueNumber = payload.issue?.number;
   if (!issueNumber) throw new Error("failed to get issue number.");
 
-  // get current comment body. and check whether includes TRIGGER_WORD.
-  const commentBody = payload.comment?.body as string;
-  if (!hasTriggerWord(commentBody)) return;
+  // Only perform when includes `/chatgpt` in comment.
+  if (!hasTriggerWord(payload.comment?.body)) return;
 
-  // TODO: get previous chat messages.
+  // Get current chat messages.
+  const { owner, repo } = context.repo;
+  const allComments = await octokit.rest.issues.listComments({
+    owner,
+    repo,
+    issue_number: issueNumber,
+  });
+  const messages: ChatCompletionRequestMessage[] = allComments.data.map(
+    convertToChatCompletionRequestMessage
+  );
 
-  // get chatgpt response.
+  // Generate next chat message.
   const configuration = new openai.Configuration({
     apiKey: openaiApiKey,
   });
-  const chatGPTResponse = await getChatGPTResponse(
-    configuration,
-    commentBody.replace(TRIGGER_WORD, "")
-  );
+  const chatGPTResponse = await getChatGPTResponse(configuration, messages);
   if (!chatGPTResponse) throw new Error("failed to get chatgpt response.");
 
-  // comment issue.
+  // Comment to issue.
   await createGitHubIssueComment(githubToken, issueNumber, chatGPTResponse);
 };
 
 const TRIGGER_WORD = "/chatgpt";
 const hasTriggerWord = (body: string): boolean => {
   return body !== "" && body.includes(TRIGGER_WORD);
+};
+
+// TODO: not implement
+const convertToChatCompletionRequestMessage = (
+  comment: any
+): ChatCompletionRequestMessage => {
+  return {
+    role: "user",
+    content: "hoge",
+  };
 };
