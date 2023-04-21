@@ -28,8 +28,20 @@ export const run = async () => {
     issue_number: issueNumber,
   });
 
-  // TODO: コメント作成日順に照準ソートする
-  const messages: ChatCompletionRequestMessage[] = allComments.data
+  const allCommentsOrderByCreatedAt = allComments.data.sort((a, b) => {
+    const aCreatedAt = new Date(a.created_at).getTime();
+    const bCreatedAt = new Date(b.created_at).getTime();
+
+    if (aCreatedAt < bCreatedAt) {
+      return -1;
+    } else if (aCreatedAt > bCreatedAt) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  const messages: ChatCompletionRequestMessage[] = allCommentsOrderByCreatedAt
     .map(convertToChatCompletionRequestMessage)
     .filter(
       (
