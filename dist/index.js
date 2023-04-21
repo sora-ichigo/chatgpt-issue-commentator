@@ -20778,16 +20778,11 @@ function wrappy (fn, cb) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getChatGPTResponse = void 0;
 const openai_1 = __nccwpck_require__(9211);
-const getChatGPTResponse = async (configuration, message) => {
+const getChatGPTResponse = async (configuration, messages) => {
     const client = new openai_1.OpenAIApi(configuration);
     const response = await client.createChatCompletion({
         model: "gpt-3.5-turbo",
-        messages: [
-            {
-                role: "user",
-                content: message,
-            },
-        ],
+        messages,
     });
     return response.data.choices[0].message?.content;
 };
@@ -20913,39 +20908,75 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.run = void 0;
+exports.run = exports.BOT_KEYWORD = exports.USER_KEYWORD = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const openai = __importStar(__nccwpck_require__(9211));
 const chatgpt_1 = __nccwpck_require__(8322);
 const github_1 = __nccwpck_require__(978);
+exports.USER_KEYWORD = "/chatgpt";
+exports.BOT_KEYWORD = "<!-- This comment is a response by chatgpt-issue-commentator. -->";
 const run = async () => {
     const githubToken = core.getInput("github-token");
+    const octokit = github.getOctokit(githubToken);
     const openaiApiKey = core.getInput("openai-api-key");
     const context = github.context;
     const payload = context.payload;
-    // only support github issue.
+    // Only support github issue.
     const issueNumber = payload.issue?.number;
     if (!issueNumber)
         throw new Error("failed to get issue number.");
-    // get current comment body. and check whether includes TRIGGER_WORD.
-    const commentBody = payload.comment?.body;
-    if (!hasTriggerWord(commentBody))
+    // Only perform when includes `/chatgpt` in comment.
+    if (!hasTriggerWord(payload.comment?.body))
         return;
-    // get chatgpt response.
+    // Get current chat messages.
+    const { owner, repo } = context.repo;
+    const allComments = await octokit.rest.issues.listComments({
+        owner,
+        repo,
+        issue_number: issueNumber,
+    });
+    const allCommentsOrderByCreatedAt = allComments.data.sort((a, b) => {
+        const aCreatedAt = new Date(a.created_at).getTime();
+        const bCreatedAt = new Date(b.created_at).getTime();
+        if (aCreatedAt < bCreatedAt)
+            return -1;
+        if (aCreatedAt > bCreatedAt)
+            return 1;
+        return 0;
+    });
+    const messages = allCommentsOrderByCreatedAt
+        .map(convertToChatCompletionRequestMessage)
+        .filter((v) => v !== undefined);
+    // Generate next chat message.
     const configuration = new openai.Configuration({
         apiKey: openaiApiKey,
     });
-    const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, commentBody.replace(TRIGGER_WORD, ""));
+    const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, messages);
     if (!chatGPTResponse)
         throw new Error("failed to get chatgpt response.");
-    // comment issue.
-    await (0, github_1.createGitHubIssueComment)(githubToken, issueNumber, chatGPTResponse);
+    // Comment to issue.
+    await (0, github_1.createGitHubIssueComment)(githubToken, issueNumber, `${exports.BOT_KEYWORD}\n\n${chatGPTResponse}`);
 };
 exports.run = run;
-const TRIGGER_WORD = "/chatgpt";
 const hasTriggerWord = (body) => {
+    const TRIGGER_WORD = exports.USER_KEYWORD;
     return body !== "" && body.includes(TRIGGER_WORD);
+};
+const convertToChatCompletionRequestMessage = (comment) => {
+    const message = { role: "user", content: "" };
+    if (comment.body?.includes(exports.USER_KEYWORD)) {
+        message.role = "user";
+        message.content = comment.body?.replace(exports.USER_KEYWORD, "");
+    }
+    else if (comment.body?.includes(exports.BOT_KEYWORD)) {
+        message.role = "user";
+        message.content = comment.body?.replace(exports.BOT_KEYWORD, "");
+    }
+    else {
+        return undefined;
+    }
+    return message;
 };
 
 
