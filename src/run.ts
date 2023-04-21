@@ -6,6 +6,10 @@ import { ChatCompletionRequestMessage } from "openai";
 import { getChatGPTResponse } from "./chatgpt";
 import { createGitHubIssueComment } from "./github";
 
+export const USER_KEYWORD = "/chatgpt";
+export const BOT_KEYWORD =
+  "<!-- This comment is a response by chatgpt-issue-commentator. -->";
+
 export const run = async () => {
   const githubToken = core.getInput("github-token");
   const octokit = github.getOctokit(githubToken);
@@ -32,13 +36,9 @@ export const run = async () => {
     const aCreatedAt = new Date(a.created_at).getTime();
     const bCreatedAt = new Date(b.created_at).getTime();
 
-    if (aCreatedAt < bCreatedAt) {
-      return -1;
-    } else if (aCreatedAt > bCreatedAt) {
-      return 1;
-    } else {
-      return 0;
-    }
+    if (aCreatedAt < bCreatedAt) return -1;
+    if (aCreatedAt > bCreatedAt) return 1;
+    return 0;
   });
 
   const messages: ChatCompletionRequestMessage[] = allCommentsOrderByCreatedAt
@@ -56,19 +56,19 @@ export const run = async () => {
   const chatGPTResponse = await getChatGPTResponse(configuration, messages);
   if (!chatGPTResponse) throw new Error("failed to get chatgpt response.");
 
-  // TODO: chatGPTResponse に`<!-- This comment is a response by chatgpt-issue-commentator. -->`を含めるようにする
   // Comment to issue.
-  await createGitHubIssueComment(githubToken, issueNumber, chatGPTResponse);
+  await createGitHubIssueComment(
+    githubToken,
+    issueNumber,
+    `${BOT_KEYWORD}\n\n${chatGPTResponse}`
+  );
 };
 
-const TRIGGER_WORD = "/chatgpt";
 const hasTriggerWord = (body: string): boolean => {
+  const TRIGGER_WORD = USER_KEYWORD;
   return body !== "" && body.includes(TRIGGER_WORD);
 };
 
-const USER_KEYWORD = "/chatgpt";
-const BOT_KEYWORD =
-  "<!-- This comment is a response by chatgpt-issue-commentator. -->";
 const convertToChatCompletionRequestMessage = (comment: {
   body?: string | undefined;
 }): ChatCompletionRequestMessage | undefined => {
