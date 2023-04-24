@@ -64,12 +64,13 @@ export const run = async () => {
   );
 
   const chatGPTResponse = await getChatGPTResponse(configuration, [
-    ...systemPromptParts.map<ChatCompletionRequestMessage>((part) => {
-      return {
-        role: "system",
-        content: part,
-      };
-    }),
+    // ...systemPromptParts.map<ChatCompletionRequestMessage>((part) => {
+    // ...systemPromptParts.map<ChatCompletionRequestMessage>((part) => {
+    //   return {
+    //     role: "system",
+    //     content: part,
+    //   };
+    // }),
     ...messages,
   ]);
   if (!chatGPTResponse) throw new Error("failed to get chatgpt response.");
