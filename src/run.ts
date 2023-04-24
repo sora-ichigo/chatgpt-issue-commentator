@@ -163,14 +163,11 @@ url: ${comment.html_url}
   return sliceTextByTokens(fullSystemPrompt, 2000);
 };
 
-const sliceTextByTokens = (
-  text: string,
-  approxTokensLimit: number
-): string[] => {
+function sliceTextByTokens(text: string, approxTokensLimit: number): string[] {
   const chunks: string[] = [];
 
-  // Assuming 1 token = 4 characters, as an approximation
-  const approxCharsLimit = approxTokensLimit * 4;
+  // Assuming 1 token = 1.5 characters, as an approximation
+  const approxCharsLimit = approxTokensLimit / 1.5;
   let startIndex = 0;
   while (startIndex < text.length) {
     const endIndex =
@@ -182,4 +179,4 @@ const sliceTextByTokens = (
   }
 
   return chunks;
-};
+}
