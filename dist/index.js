@@ -20958,7 +20958,7 @@ const run = async () => {
     const configuration = new openai.Configuration({
         apiKey: openaiApiKey,
     });
-    const systemPromptParts = generateSystemPrompt(issue.data, issueComments.data);
+    const systemPromptParts = generateSystemPrompts(issue.data, issueComments.data);
     const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, [
         ...systemPromptParts.map((part) => {
             return {
@@ -20996,7 +20996,7 @@ const convertToChatCompletionRequestMessage = (comment) => {
     }
     return message;
 };
-const generateSystemPrompt = (issueData, issueComments) => {
+const generateSystemPrompts = (issueData, issueComments) => {
     const fullSystemPrompt = `
 #Instruction
 You are a skilled software engineer. Based on the content of the Issue and Issue Comment provided below, please become a conversation partner in the following discussions. The contents of the Issue and Issue Comment can be found in the JSON responses at "https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER" and "https://api.github.com/repos/OWNER/REPO/issues/comments", respectively.
@@ -21042,7 +21042,7 @@ user: ${comment.user?.login}
 url: ${comment.html_url}
 `)
         .join("\n")}`;
-    return sliceTextByTokens(fullSystemPrompt, 4096);
+    return sliceTextByTokens(fullSystemPrompt, 2000);
 };
 const sliceTextByTokens = (text, approxTokensLimit) => {
     const chunks = [];
