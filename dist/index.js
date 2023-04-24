@@ -21044,10 +21044,10 @@ url: ${comment.html_url}
         .join("\n")}`;
     return sliceTextByTokens(fullSystemPrompt, 2000);
 };
-const sliceTextByTokens = (text, approxTokensLimit) => {
+function sliceTextByTokens(text, approxTokensLimit) {
     const chunks = [];
-    // Assuming 1 token = 4 characters, as an approximation
-    const approxCharsLimit = approxTokensLimit * 4;
+    // Assuming 1 token = 1.5 characters, as an approximation
+    const approxCharsLimit = approxTokensLimit / 1.5;
     let startIndex = 0;
     while (startIndex < text.length) {
         const endIndex = startIndex + Math.min(approxCharsLimit, text.length - startIndex);
@@ -21056,7 +21056,7 @@ const sliceTextByTokens = (text, approxTokensLimit) => {
         startIndex = endIndex;
     }
     return chunks;
-};
+}
 
 
 /***/ }),
