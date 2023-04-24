@@ -20958,17 +20958,26 @@ const run = async () => {
     const configuration = new openai.Configuration({
         apiKey: openaiApiKey,
     });
+    const systemPrompt = generateSystemPrompt(issue.data, issueComments.data);
     const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, [
         {
             role: "system",
-            content: generateSystemPrompt(issue.data, issueComments.data),
+            content: systemPrompt,
         },
         ...messages,
     ]);
     if (!chatGPTResponse)
         throw new Error("failed to get chatgpt response.");
     // Comment to issue.
-    await (0, github_1.createGitHubIssueComment)(githubToken, issueNumber, `${exports.BOT_KEYWORD}\n\n${chatGPTResponse}`);
+    await (0, github_1.createGitHubIssueComment)(githubToken, issueNumber, `${exports.BOT_KEYWORD}
+
+${chatGPTResponse}
+
+<details><summary>system prompt</summary>
+\`\`\`
+${systemPrompt}
+\`\`\`
+</details>`);
 };
 exports.run = run;
 const hasTriggerWord = (body) => {
