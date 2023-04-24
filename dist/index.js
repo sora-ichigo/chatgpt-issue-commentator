@@ -20961,7 +20961,7 @@ const run = async () => {
     const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, [
         {
             role: "system",
-            content: generateSystemPrompt(JSON.stringify(issue), JSON.stringify(issueComments)),
+            content: generateSystemPrompt(issue.data, issueComments.data),
         },
         ...messages,
     ]);
@@ -20996,10 +20996,29 @@ const generateSystemPrompt = (issueData, issueComments) => {
 You are a skilled software engineer. Based on the content of the Issue and Issue Comment provided below, please become a conversation partner in the following discussions. The contents of the Issue and Issue Comment can be found in the JSON responses at "https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER" and "https://api.github.com/repos/OWNER/REPO/issues/comments", respectively.
 
 #Issue Content
-${issueData}
+number: ${issueData.number}
+title: ${issueData.title}
+description: ${issueData.description}
+body: ${issueData.body}
+url: ${issueData.html_url}
+pull_request_url: {issueData.pull_request?.html_url}
+state: ${issueData.state}
+created_at: ${issueData.created_at}
+created_at: ${issueData.updated_at}
+assignee: ${issueData.assignee?.login}
 
 #Issue Comment Content
-${issueComments}`;
+${issueComments
+        .map((comment) => `
+------------------------------------
+comment at ${comment.created_at}.
+
+body: ${comment.body}
+user: ${comment.user?.login}
+url: ${comment.html_url}
+------------------------------------
+  `)
+        .join("\n")}`;
 };
 
 
