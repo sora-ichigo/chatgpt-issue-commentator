@@ -1,13 +1,17 @@
-name: 'ChatGPT Issue Commentator'
-description: 'Automated ChatGPT responses for GitHub issues with simple @mentions'
+name: "ChatGPT Issue Commentator"
+description: "Automated ChatGPT responses for GitHub issues with simple @mentions"
 inputs:
   openai-api-key:
-    description: 'OpenAI Api Key'
+    description: "OpenAI Api Key"
     required: true
   github-token:
-    description: 'GitHub Access Token'
+    description: "GitHub Access Token"
     default: ${{ github.token }}
     required: false
+  github-issue-context:
+    description: "if github-issue-context is 1, ChatGPT gets the issue data."
+    default: 0
+    required: false
 runs:
-  using: 'node16'
-  main: 'dist/index.js'
+  using: "node16"
+  main: "dist/index.js"

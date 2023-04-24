@@ -14,6 +14,7 @@ export const run = async () => {
   const githubToken = core.getInput("github-token");
   const octokit = github.getOctokit(githubToken);
   const openaiApiKey = core.getInput("openai-api-key");
+  const githubIssueContext = core.getInput("github-issue-context");
   const context = github.context;
   const payload = context.payload;
 
@@ -46,7 +47,7 @@ export const run = async () => {
   });
 
   // List current chat messages.
-  const messages: ChatCompletionRequestMessage[] = allCommentsOrderByCreatedAt
+  let messages: ChatCompletionRequestMessage[] = allCommentsOrderByCreatedAt
     .map(convertToChatCompletionRequestMessage)
     .filter(
       (
@@ -58,21 +59,25 @@ export const run = async () => {
   const configuration = new openai.Configuration({
     apiKey: openaiApiKey,
   });
-  const systemPromptParts = generateSystemPrompts(
-    issue.data,
-    issueComments.data
-  );
 
-  const chatGPTResponse = await getChatGPTResponse(configuration, [
-    // ...systemPromptParts.map<ChatCompletionRequestMessage>((part) => {
-    // ...systemPromptParts.map<ChatCompletionRequestMessage>((part) => {
-    //   return {
-    //     role: "system",
-    //     content: part,
-    //   };
-    // }),
-    ...messages,
-  ]);
+  // TODO: not implement
+  // if enable `github-issue-context`.
+  // if (Number(githubIssueContext) === 1) {
+  //   const systemPromptParts = generateSystemPrompts(
+  //     issue.data,
+  //     issueComments.data
+  //   );
+
+  //   messages = [
+  //     {
+  //       role: "system",
+  //       content: systemPromptParts[0],
+  //     },
+  //     ...messages,
+  //   ];
+  // }
+
+  const chatGPTResponse = await getChatGPTResponse(configuration, messages);
   if (!chatGPTResponse) throw new Error("failed to get chatgpt response.");
 
   // Comment to issue.
@@ -115,7 +120,8 @@ const generateSystemPrompts = (
 ): string[] => {
   const fullSystemPrompt = `
 #Instruction
-You are a skilled software engineer. Based on the content of the Issue and Issue Comment provided below, please become a conversation partner in the following discussions. The contents of the Issue and Issue Comment can be found in the JSON responses at "https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER" and "https://api.github.com/repos/OWNER/REPO/issues/comments", respectively.
+You are a skilled software engineer. Based on the content of the Issue and Issue Comment provided below, please become a conversation partner in the following discussions.
+Due to the character limit, the text will be divided into several messages. When you reply to a message, please send the whole text without dividing it in the middle.
 
 #Issue Content
 ##number
@@ -148,7 +154,7 @@ ${issueData.updated_at}
 ##assignee
 ${issueData.assignee?.login}
 
-#Issue Comment Content
+##Issue Comment Content
 ${issueComments
   .map(
     (comment: any) => `
@@ -161,7 +167,7 @@ url: ${comment.html_url}
   )
   .join("\n")}`;
 
-  return sliceTextByTokens(fullSystemPrompt, 2000);
+  return sliceTextByTokens(fullSystemPrompt, 500);
 };
 
 function sliceTextByTokens(text: string, approxTokensLimit: number): string[] {
