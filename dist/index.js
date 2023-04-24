@@ -20972,12 +20972,7 @@ const run = async () => {
     await (0, github_1.createGitHubIssueComment)(githubToken, issueNumber, `${exports.BOT_KEYWORD}
 
 ${chatGPTResponse}
-
-<details><summary>system prompt</summary>
-\`\`\`
-${systemPrompt}
-\`\`\`
-</details>`);
+`);
 };
 exports.run = run;
 const hasTriggerWord = (body) => {
@@ -21005,28 +21000,45 @@ const generateSystemPrompt = (issueData, issueComments) => {
 You are a skilled software engineer. Based on the content of the Issue and Issue Comment provided below, please become a conversation partner in the following discussions. The contents of the Issue and Issue Comment can be found in the JSON responses at "https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER" and "https://api.github.com/repos/OWNER/REPO/issues/comments", respectively.
 
 #Issue Content
-number: ${issueData.number}
-title: ${issueData.title}
-description: ${issueData.description}
-body: ${issueData.body}
-url: ${issueData.html_url}
-pull_request_url: {issueData.pull_request?.html_url}
-state: ${issueData.state}
-created_at: ${issueData.created_at}
-created_at: ${issueData.updated_at}
-assignee: ${issueData.assignee?.login}
+##number:
+${issueData.number}
+
+##title:
+${issueData.title}
+
+##description:
+${issueData.description}
+
+##body: 
+${issueData.body}
+
+##url:
+${issueData.html_url}
+
+##pull_request_url:
+{issueData.pull_request?.html_url}
+
+##state:
+${issueData.state}
+
+##created_at:
+${issueData.created_at}
+
+##created_at:
+${issueData.updated_at}
+
+##assignee:
+${issueData.assignee?.login}
 
 #Issue Comment Content
 ${issueComments
         .map((comment) => `
-------------------------------------
-comment at ${comment.created_at}.
+##comment at ${comment.created_at}.
 
 body: ${comment.body}
 user: ${comment.user?.login}
 url: ${comment.html_url}
-------------------------------------
-  `)
+`)
         .join("\n")}`;
 };
 
