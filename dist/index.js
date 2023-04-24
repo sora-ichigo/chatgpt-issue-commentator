@@ -20958,12 +20958,14 @@ const run = async () => {
     const configuration = new openai.Configuration({
         apiKey: openaiApiKey,
     });
-    const systemPrompt = generateSystemPrompt(issue.data, issueComments.data);
+    const systemPromptParts = generateSystemPrompt(issue.data, issueComments.data);
     const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, [
-        {
-            role: "system",
-            content: systemPrompt,
-        },
+        ...systemPromptParts.map((part) => {
+            return {
+                role: "system",
+                content: part,
+            };
+        }),
         ...messages,
     ]);
     if (!chatGPTResponse)
@@ -20995,7 +20997,7 @@ const convertToChatCompletionRequestMessage = (comment) => {
     return message;
 };
 const generateSystemPrompt = (issueData, issueComments) => {
-    return `
+    const fullSystemPrompt = `
 #Instruction
 You are a skilled software engineer. Based on the content of the Issue and Issue Comment provided below, please become a conversation partner in the following discussions. The contents of the Issue and Issue Comment can be found in the JSON responses at "https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER" and "https://api.github.com/repos/OWNER/REPO/issues/comments", respectively.
 
@@ -21040,6 +21042,20 @@ user: ${comment.user?.login}
 url: ${comment.html_url}
 `)
         .join("\n")}`;
+    return sliceTextByTokens(fullSystemPrompt, 4096);
+};
+const sliceTextByTokens = (text, approxTokensLimit) => {
+    const chunks = [];
+    // Assuming 1 token = 4 characters, as an approximation
+    const approxCharsLimit = approxTokensLimit * 4;
+    let startIndex = 0;
+    while (startIndex < text.length) {
+        const endIndex = startIndex + Math.min(approxCharsLimit, text.length - startIndex);
+        const chunk = text.slice(startIndex, endIndex);
+        chunks.push(chunk);
+        startIndex = endIndex;
+    }
+    return chunks;
 };
 
 
