@@ -20960,12 +20960,13 @@ const run = async () => {
     });
     const systemPromptParts = generateSystemPrompts(issue.data, issueComments.data);
     const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, [
-        ...systemPromptParts.map((part) => {
-            return {
-                role: "system",
-                content: part,
-            };
-        }),
+        // ...systemPromptParts.map<ChatCompletionRequestMessage>((part) => {
+        // ...systemPromptParts.map<ChatCompletionRequestMessage>((part) => {
+        //   return {
+        //     role: "system",
+        //     content: part,
+        //   };
+        // }),
         ...messages,
     ]);
     if (!chatGPTResponse)
