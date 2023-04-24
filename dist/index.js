@@ -20929,14 +20929,19 @@ const run = async () => {
     // Only perform when includes `/chatgpt` in comment.
     if (!hasTriggerWord(payload.comment?.body))
         return;
-    // Get current chat messages.
     const { owner, repo } = context.repo;
-    const allComments = await octokit.rest.issues.listComments({
+    // Get issue data.
+    const issue = await octokit.rest.issues.get({
         owner,
         repo,
         issue_number: issueNumber,
     });
-    const allCommentsOrderByCreatedAt = allComments.data.sort((a, b) => {
+    const issueComments = await octokit.rest.issues.listComments({
+        owner,
+        repo,
+        issue_number: issueNumber,
+    });
+    const allCommentsOrderByCreatedAt = issueComments.data.sort((a, b) => {
         const aCreatedAt = new Date(a.created_at).getTime();
         const bCreatedAt = new Date(b.created_at).getTime();
         if (aCreatedAt < bCreatedAt)
@@ -20945,6 +20950,7 @@ const run = async () => {
             return 1;
         return 0;
     });
+    // List current chat messages.
     const messages = allCommentsOrderByCreatedAt
         .map(convertToChatCompletionRequestMessage)
         .filter((v) => v !== undefined);
@@ -20952,7 +20958,13 @@ const run = async () => {
     const configuration = new openai.Configuration({
         apiKey: openaiApiKey,
     });
-    const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, messages);
+    const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, [
+        {
+            role: "system",
+            content: generateSystemPrompt(JSON.stringify(issue), JSON.stringify(issueComments)),
+        },
+        ...messages,
+    ]);
     if (!chatGPTResponse)
         throw new Error("failed to get chatgpt response.");
     // Comment to issue.
@@ -20977,6 +20989,17 @@ const convertToChatCompletionRequestMessage = (comment) => {
         return undefined;
     }
     return message;
+};
+const generateSystemPrompt = (issueData, issueComments) => {
+    return `
+#Instruction
+You are a skilled software engineer. Based on the content of the Issue and Issue Comment provided below, please become a conversation partner in the following discussions. The contents of the Issue and Issue Comment can be found in the JSON responses at "https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER" and "https://api.github.com/repos/OWNER/REPO/issues/comments", respectively.
+
+#Issue Content
+${issueData}
+
+#Issue Comment Content
+${issueComments}`;
 };
 
 
