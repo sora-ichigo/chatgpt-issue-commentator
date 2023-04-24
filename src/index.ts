@@ -5,5 +5,5 @@ import { run } from "./run";
 try {
   run();
 } catch (e: any) {
-  core.setFailed(e instanceof Error ? e.message : JSON.stringify(e));
+  core.setFailed(e);
 }

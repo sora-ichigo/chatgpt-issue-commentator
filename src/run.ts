@@ -109,41 +109,41 @@ const generateSystemPrompt = (issueData: any, issueComments: any): string => {
 You are a skilled software engineer. Based on the content of the Issue and Issue Comment provided below, please become a conversation partner in the following discussions. The contents of the Issue and Issue Comment can be found in the JSON responses at "https://api.github.com/repos/OWNER/REPO/issues/ISSUE_NUMBER" and "https://api.github.com/repos/OWNER/REPO/issues/comments", respectively.
 
 #Issue Content
-##number:
+##number
 ${issueData.number}
 
-##title:
+##title
 ${issueData.title}
 
-##description:
+##description
 ${issueData.description}
 
-##body: 
+##body
 ${issueData.body}
 
-##url:
+##url
 ${issueData.html_url}
 
-##pull_request_url:
+##pull_request_url
 {issueData.pull_request?.html_url}
 
-##state:
+##state
 ${issueData.state}
 
-##created_at:
+##created_at
 ${issueData.created_at}
 
-##created_at:
+##created_at
 ${issueData.updated_at}
 
-##assignee:
+##assignee
 ${issueData.assignee?.login}
 
 #Issue Comment Content
 ${issueComments
   .map(
     (comment: any) => `
-##comment at ${comment.created_at}.
+##comment at ${comment.created_at}
 
 body: ${comment.body}
 user: ${comment.user?.login}
