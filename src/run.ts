@@ -58,10 +58,12 @@ export const run = async () => {
   const configuration = new openai.Configuration({
     apiKey: openaiApiKey,
   });
+  const systemPrompt = generateSystemPrompt(issue.data, issueComments.data);
+
   const chatGPTResponse = await getChatGPTResponse(configuration, [
     {
       role: "system",
-      content: generateSystemPrompt(issue.data, issueComments.data),
+      content: systemPrompt,
     },
     ...messages,
   ]);
@@ -71,7 +73,15 @@ export const run = async () => {
   await createGitHubIssueComment(
     githubToken,
     issueNumber,
-    `${BOT_KEYWORD}\n\n${chatGPTResponse}`
+    `${BOT_KEYWORD}
+
+${chatGPTResponse}
+
+<details><summary>system prompt</summary>
+\`\`\`
+${systemPrompt}
+\`\`\`
+</details>`
   );
 };
 
