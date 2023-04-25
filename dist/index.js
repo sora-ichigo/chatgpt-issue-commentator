@@ -20959,17 +20959,21 @@ const run = async () => {
     const configuration = new openai.Configuration({
         apiKey: openaiApiKey,
     });
+    // TODO: not implement
     // if enable `github-issue-context`.
-    if (Number(githubIssueContext) === 1) {
-        const systemPromptParts = generateSystemPrompts(issue.data, issueComments.data);
-        messages = [
-            {
-                role: "system",
-                content: systemPromptParts[0],
-            },
-            ...messages,
-        ];
-    }
+    // if (Number(githubIssueContext) === 1) {
+    //   const systemPromptParts = generateSystemPrompts(
+    //     issue.data,
+    //     issueComments.data
+    //   );
+    //   messages = [
+    //     {
+    //       role: "system",
+    //       content: systemPromptParts[0],
+    //     },
+    //     ...messages,
+    //   ];
+    // }
     const chatGPTResponse = await (0, chatgpt_1.getChatGPTResponse)(configuration, messages);
     if (!chatGPTResponse)
         throw new Error("failed to get chatgpt response.");
