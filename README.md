@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run ChatGPT Issue Commentator
-        uses: igsr5/chatgpt-issue-commentator@v0.2 # NOTE: experimental
+        uses: igsr5/chatgpt-issue-commentator@v0
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           github-issue-context: 0
