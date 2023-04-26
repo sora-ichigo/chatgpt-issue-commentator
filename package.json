@@ -1,6 +1,6 @@
 {
   "name": "chatgpt-issue-commentator",
-  "version": "0.1.2",
+  "version": "0.2",
   "author": "igsr5 <igsr5.dev@gmail.com>",
   "license": "MIT",
   "packageManager": "yarn@3.5.0",
