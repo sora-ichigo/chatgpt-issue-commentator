@@ -3,6 +3,7 @@
 ChatGPT Issue Commentator is a tool that allows you to interact with ChatGPT and request tasks within GitHub Issues.
 
 ## Features
+⚠️ experimental
 
 - [X] Interact with ChatGPT by including `/chatgpt` in a comment on a GitHub Issue.
 - [ ] Request tasks from ChatGPT within GitHub Issues.
@@ -53,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run ChatGPT Issue Commentator
-        uses: igsr5/chatgpt-issue-commentator@master
+        uses: igsr5/chatgpt-issue-commentator@v0.2 # NOTE: experimental
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           github-issue-context: 0
