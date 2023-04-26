@@ -40,7 +40,7 @@ Developed to provide a better way to use ChatGPT in development with GitHub comp
 1. Create the following YAML file in the `.github/workflows` directory.
 
 ```yaml
-name: Test ChatGPT Issue Commentator
+name: ChatGPT Issue Commentator
 
 on:
   issue_comment:
