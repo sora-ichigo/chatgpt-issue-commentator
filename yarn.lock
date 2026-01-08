@@ -5,13 +5,22 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@actions/core@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "@actions/core@npm:1.10.0"
+"@actions/core@npm:^2.0.0":
+  version: 2.0.2
+  resolution: "@actions/core@npm:2.0.2"
   dependencies:
-    "@actions/http-client": ^2.0.1
-    uuid: ^8.3.2
-  checksum: 0a75621e007ab20d887434cdd165f0b9036f14c22252a2faed33543d8b9d04ec95d823e69ca636a25245574e4585d73e1e9e47a845339553c664f9f2c9614669
+    "@actions/exec": ^2.0.0
+    "@actions/http-client": ^3.0.1
+  checksum: 349858216a12fdad13ded50738c683c6744f8a45b950ca8cc2cac5cbe410d4e6577b3c9aa00923dbf10c23fde7a98ffc47c11177eacaa90b27d019a1ec5fed37
+  languageName: node
+  linkType: hard
+
+"@actions/exec@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@actions/exec@npm:2.0.0"
+  dependencies:
+    "@actions/io": ^2.0.0
+  checksum: 001e4139129fce56459c7fa3970d50e85dc9bffef5fe451312ff1277f1f18d553d221012a199d58b3a5c2198bd0c71b2060dd28e52ebfeaf5a91331347c93208
   languageName: node
   linkType: hard
 
@@ -33,6 +42,30 @@ __metadata:
   dependencies:
     tunnel: ^0.0.6
   checksum: 25a72a952cc95fb4b3ab086da73a5754dd0957c206637cace69be2e16f018cc1b3d3c40d3bcf89ffd8a5929d5e8445594b498b50db306a50ad7536023f8e3800
+  languageName: node
+  linkType: hard
+
+"@actions/http-client@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@actions/http-client@npm:3.0.1"
+  dependencies:
+    tunnel: ^0.0.6
+    undici: ^5.28.5
+  checksum: 421ecc5a7ed288854eb4f30b7b156a4ab43150ce4d5362be743ed142873af5f01581ac4840df68615155a6e49c5977e725bc239db32099b33814f3105b96f388
+  languageName: node
+  linkType: hard
+
+"@actions/io@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@actions/io@npm:2.0.0"
+  checksum: afd29e777bedd8bb59143f12aa7c28e1112ce7aed2fed953fddc51833cbb88f0b4e379a6f3aece024c974227c01875fc0cd754a27e5953259d3a90fa3fbf0f68
+  languageName: node
+  linkType: hard
+
+"@fastify/busboy@npm:^2.0.0":
+  version: 2.1.1
+  resolution: "@fastify/busboy@npm:2.1.1"
+  checksum: 42c32ef75e906c9a4809c1e1930a5ca6d4ddc8d138e1a8c8ba5ea07f997db32210617d23b2e4a85fe376316a41a1a0439fc6ff2dedf5126d96f45a9d80754fb2
   languageName: node
   linkType: hard
 
@@ -331,7 +364,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "chatgpt-issue-commentator@workspace:."
   dependencies:
-    "@actions/core": ^1.10.0
+    "@actions/core": ^2.0.0
     "@actions/github": ^5.1.1
     "@vercel/ncc": ^0.36.1
     openai: ^3.2.1
@@ -1140,6 +1173,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici@npm:^5.28.5":
+  version: 5.29.0
+  resolution: "undici@npm:5.29.0"
+  dependencies:
+    "@fastify/busboy": ^2.0.0
+  checksum: a25b5462c1b6ffb974f5ffc492ffd64146a9983aad0cbda6fde65e2b22f6f1acd43f09beacc66cc47624a113bd0c684ffc60366102b6a21b038fbfafb7d75195
+  languageName: node
+  linkType: hard
+
 "unique-filename@npm:^2.0.0":
   version: 2.0.1
   resolution: "unique-filename@npm:2.0.1"
@@ -1169,15 +1211,6 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 474acf1146cb2701fe3b074892217553dfcf9a031280919ba1b8d651a068c9b15d863b7303cb15bd00a862b498e6cf4ad7b4a08fb134edd5a6f7641681cb54a2
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^8.3.2":
-  version: 8.3.2
-  resolution: "uuid@npm:8.3.2"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
   languageName: node
   linkType: hard
 
