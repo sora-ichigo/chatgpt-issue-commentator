@@ -5,13 +5,22 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@actions/core@npm:^1.10.0":
-  version: 1.10.0
-  resolution: "@actions/core@npm:1.10.0"
+"@actions/core@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "@actions/core@npm:3.0.1"
   dependencies:
-    "@actions/http-client": ^2.0.1
-    uuid: ^8.3.2
-  checksum: 0a75621e007ab20d887434cdd165f0b9036f14c22252a2faed33543d8b9d04ec95d823e69ca636a25245574e4585d73e1e9e47a845339553c664f9f2c9614669
+    "@actions/exec": ^3.0.0
+    "@actions/http-client": ^4.0.0
+  checksum: 4f29321d8629c220b29486ea0d6bc320e968b9bd5b4346a86450d090123a1f83910c2aa3b05efb0c0fbcf7169a51e9573d7f4e318281c97d5e7859d1699a23f0
+  languageName: node
+  linkType: hard
+
+"@actions/exec@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@actions/exec@npm:3.0.0"
+  dependencies:
+    "@actions/io": ^3.0.2
+  checksum: 8a8c2d28088b0daf019c24abd2127e6694f7427f6f8b866cf7e9d1709dcdc3e15156f2f061977a814113c6f2f2368886f2a9cdf21631d2b9bf7ff22fc80e55e2
   languageName: node
   linkType: hard
 
@@ -33,6 +42,23 @@ __metadata:
   dependencies:
     tunnel: ^0.0.6
   checksum: 25a72a952cc95fb4b3ab086da73a5754dd0957c206637cace69be2e16f018cc1b3d3c40d3bcf89ffd8a5929d5e8445594b498b50db306a50ad7536023f8e3800
+  languageName: node
+  linkType: hard
+
+"@actions/http-client@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "@actions/http-client@npm:4.0.1"
+  dependencies:
+    tunnel: ^0.0.6
+    undici: ^6.23.0
+  checksum: 45da4bacfd50dbd18cb77171e789242d77739d744e394f1cd65c0e8cbfee0d3176a264239e475fcad889a60ea180d74cdd985cb3dd1d3f9627ff69846929facd
+  languageName: node
+  linkType: hard
+
+"@actions/io@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@actions/io@npm:3.0.2"
+  checksum: 69c1d58f2b37f4a2248e6d727be900af21e69051c614e161132c6aa459a09654ef84b13b7007f7cc87c7bbaf74e2c37a1add97c76791db64eb810d6a3f4ad96e
   languageName: node
   linkType: hard
 
@@ -331,7 +357,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "chatgpt-issue-commentator@workspace:."
   dependencies:
-    "@actions/core": ^1.10.0
+    "@actions/core": ^3.0.0
     "@actions/github": ^5.1.1
     "@vercel/ncc": ^0.36.1
     openai: ^3.2.1
@@ -1140,6 +1166,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"undici@npm:^6.23.0":
+  version: 6.28.1
+  resolution: "undici@npm:6.28.1"
+  checksum: 25f7398989c7f6d22b4120bb97ac2d8449e5bd30fe0c5eb9265537786a9950c35a0b363a74770729d94084784689f1304744e3e02cff32c614385d5dd4172af7
+  languageName: node
+  linkType: hard
+
 "unique-filename@npm:^2.0.0":
   version: 2.0.1
   resolution: "unique-filename@npm:2.0.1"
@@ -1169,15 +1202,6 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 474acf1146cb2701fe3b074892217553dfcf9a031280919ba1b8d651a068c9b15d863b7303cb15bd00a862b498e6cf4ad7b4a08fb134edd5a6f7641681cb54a2
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^8.3.2":
-  version: 8.3.2
-  resolution: "uuid@npm:8.3.2"
-  bin:
-    uuid: dist/bin/uuid
-  checksum: 5575a8a75c13120e2f10e6ddc801b2c7ed7d8f3c8ac22c7ed0c7b2ba6383ec0abda88c905085d630e251719e0777045ae3236f04c812184b7c765f63a70e58df
   languageName: node
   linkType: hard
 
